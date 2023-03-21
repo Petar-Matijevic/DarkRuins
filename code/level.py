@@ -97,8 +97,8 @@ class Level:
         if style == 'heal':
            self.magic_player.heal(self.player,strength,cost,[self.visible_sprites])
 
-        if style == 'female':
-            pass
+        if style == 'flame':
+            self.magic_player.flame(self.player,cost,[self.visible_sprites,self.attack_sprites])
 
 
     def destroy_attack(self):
@@ -119,7 +119,7 @@ class Level:
                                 self.animation_player.create_grass_particles(pos - offset,[self.visible_sprites])
                             target_sprite.kill()
                         else:
-                            target_sprite.get_damage(self.player,attack_sprite.sprite_type)
+                            target_sprite.get_damage(self.player, attack_sprite.sprite_type)
 
     def damage_player(self,amount,attack_type):
         if self.player.vulnerable:
