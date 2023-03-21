@@ -1,4 +1,6 @@
 import pygame
+
+from magic import MagicPlayer
 from settings import *
 from tile import Tile
 from  player import Player
@@ -35,7 +37,7 @@ class Level:
 
         # Particles
         self.animation_player = AnimationPlayer()
-
+        self.magic_player = MagicPlayer(self.animation_player)
     def create_map(self):
         layouts = {
                 'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
@@ -92,9 +94,12 @@ class Level:
         self.current_attack = Weapon(self.player, [self.visible_sprites,self.attack_sprites])
 
     def create_magic(self,style,strength,cost):
-        print(style)
-        print(strength)
-        print(cost)
+        if style == 'heal':
+           self.magic_player.heal(self.player,strength,cost,[self.visible_sprites])
+
+        if style == 'female':
+            pass
+
 
     def destroy_attack(self):
         if self.current_attack:
