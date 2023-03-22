@@ -91,8 +91,7 @@ class Level:
 
 
     def create_attack(self):
-        self.current_attack = Weapon(self.player, [self.visible_sprites,self.attack_sprites])
-
+        self.current_attack = Weapon(self.player, [self.visible_sprites, self.attack_sprites])
     def create_magic(self,style,strength,cost):
         if style == 'heal':
            self.magic_player.heal(self.player,strength,cost,[self.visible_sprites])
