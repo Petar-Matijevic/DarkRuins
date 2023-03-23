@@ -219,7 +219,7 @@ class Player(Entity):
 
     def energy_recovery(self):
         if self.energy < self.stats['energy']:
-            self.energy += 0.009 * self.stats['magic']
+            self.energy += 0.004 * self.stats['magic']
         else:
             self.energy = self.stats['energy']
 
