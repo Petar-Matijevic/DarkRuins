@@ -19,6 +19,7 @@ class Level:
     def __init__(self):
 
         # get the display surface
+        self.menu_active = None
         self.display_surface = pygame.display.get_surface()
         self.game_paused = False
 

@@ -1,3 +1,11 @@
+import time
+import pygame
+import sys
+
+from typer.colors import WHITE
+
+from settings import *
+
 import pygame
 from settings import *
 from support import import_folder
@@ -6,6 +14,7 @@ from entity import Entity
 class Player(Entity):
     def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack,create_magic):
         super().__init__(groups)
+
         self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(-9,HITBOX_OFFSET['player'])
@@ -37,8 +46,8 @@ class Player(Entity):
         self.stats = {'health': 100,'energy':60,'attack': 10,'magic': 4,'speed': 5}
         self.max_stats = {'health': 300, 'energy': 140, 'attack': 20, 'magic': 10, 'speed': 10}
         self.upgrade_cost = {'health': 100, 'energy': 100, 'attack': 100, 'magic': 100, 'speed': 100}
-        self.health = self.stats['health'] *0.8
-        self.energy = self.stats['energy'] * 0.7
+        self.health = self.stats['health'] *0.1
+        self.energy = self.stats['energy'] 
         self.exp = 76800
         self.speed = self.stats['speed']
 
@@ -61,9 +70,7 @@ class Player(Entity):
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)
 
-
     def input(self):
-
         if not self.attacking:
             keys = pygame.key.get_pressed()
 
@@ -102,9 +109,9 @@ class Player(Entity):
                 cost = list(magic_data.values())[self.magic_index]['cost']
                 self.create_magic(style,strength,cost)
 
-            # quic fix for error of not finding the right .png at the start of the game
+            # quick fix for error of not finding the right .png at the start of the game
             if self.a == 1:
-                self.a=3
+                self.a = 3
                 self.can_switch_weapon = False
                 self.weapon_switch_time = pygame.time.get_ticks()
                 if self.weapon_index < len(list(weapon_data.keys())) - 1:
@@ -121,7 +128,7 @@ class Player(Entity):
                     self.magic_index = 0
                 self.magic = list(magic_data.keys())[self.magic_index]
 
-            if keys [pygame.K_RSHIFT] and self.can_switch_weapon:
+            if keys[pygame.K_RSHIFT] and self.can_switch_weapon:
                 self.can_switch_weapon = False
                 self.weapon_switch_time = pygame.time.get_ticks()
                 if self.weapon_index < len(list(weapon_data.keys())) - 1:
@@ -132,7 +139,7 @@ class Player(Entity):
                 self.weapon = list(weapon_data.keys())[self.weapon_index]
 
             if keys[pygame.K_RCTRL] and self.can_switch_magic:
-                self.can_switch_magic= False
+                self.can_switch_magic = False
                 self.magic_switch_time = pygame.time.get_ticks()
                 if self.magic_index < len(list(magic_data.keys())) - 1:
                     self.magic_index += 1
@@ -141,9 +148,7 @@ class Player(Entity):
 
                 self.magic = list(magic_data.keys())[self.magic_index]
 
-
     def get_status(self):
-
         # idle status
         if self.direction.x == 0 and self.direction.y == 0:
             if not 'idle' in self.status and not 'attack' in self.status:
@@ -200,11 +205,10 @@ class Player(Entity):
         else:
             self.image.set_alpha(255)
 
-
     def get_full_weapon_damage(self):
         base_damage = self.stats['attack']
         weapon_damage = weapon_data[self.weapon]['damage']
-        return  base_damage + weapon_damage
+        return base_damage + weapon_damage
 
     def get_full_magic_damage(self):
         base_damage = self.stats['magic']
@@ -223,7 +227,36 @@ class Player(Entity):
         else:
             self.energy = self.stats['energy']
 
+    def check_death_player(self):
+        if self.health <= 0:
+            background = pygame.image.load('..\graphics\Bacground\death.png').convert_alpha()
+            background_rect = background.get_rect()
+
+            # Create a new surface with the same size as the display
+            display_surface = pygame.display.get_surface()
+            surface = pygame.Surface(display_surface.get_size())
+            surface.fill((0, 0, 0))  # Fill the surface with black color
+            opacity = 0
+
+            # Gradually increase the opacity over 5 seconds
+            for alpha in range(0, 255):
+                surface.set_alpha(alpha)
+                display_surface.blit(surface, (0, 0))
+                pygame.display.flip()
+                pygame.time.delay(20)  # Adjust the delay for desired animation speed
+
+            # Blit the background image onto the display
+            background = pygame.transform.scale(background, display_surface.get_size())
+            display_surface.blit(background, (0, 0))
+            pygame.display.flip()
+
+            pygame.time.delay(5000)  # Display the background image for 5 seconds
+            pygame.quit()  # Quit the game
+            sys.exit()
+            self.kill()
+
     def update(self):
+        self.check_death_player()
         self.input()
         self.cooldowns()
         self.get_status()
