@@ -19,4 +19,4 @@ Mapa:
 
 ![canvas_mapa-230522_1525](https://github.com/Petar-Matijevic/DarkRuins/assets/63779067/87b7896f-7b83-485b-af28-992a957ac52f)
 
-Link do stranice dizajna dokumenta: https://app.milanote.com/1Q0Le11iis1ecP?p=QWUFk953YZA 
+
